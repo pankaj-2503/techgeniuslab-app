@@ -6,3 +6,11 @@ const productRouter = require('./routers/productRouter');
 const adminRouter = require('./routers/adminRouter');
 const orderRouter = require('./routers/orderRouter');
 const app = express()
+
+app.use(express.urlencoded({extended: false }));
+
+//server start test
+app.get('/', function (req, res) {
+  res.send('Server running');
+})
+/
