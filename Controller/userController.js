@@ -43,3 +43,33 @@ module.exports.signUp = async (req, res) => {
     return res.status(200).send("Otp send successfully!");
 }
 
+module.exports.verifyOtp = async (req, res) => {
+    const otpHolder = await Otp.find({
+        number: req.body.number
+    });
+    if (otpHolder.length === 0) return res.status(400).send("You use an Expired OTP!");
+    const rightOtpFind = otpHolder[otpHolder.length - 1];
+    const validUser = await bcrypt.compare(req.body.otp, rightOtpFind.otp);
+
+    if (rightOtpFind.number === req.body.number && validUser) {
+        const user = new User(_.pick(req.body, ["number"]));
+       // const token = user.generateJWT();
+
+        // Generate and send the JWT token in the response
+        const authToken = generateAuthToken(user);
+        
+        // to dev- debug -- delete it during production
+        console.log(authToken);
+        const result = await user.save();
+        const OTPDelete = await Otp.deleteMany({
+            number: rightOtpFind.number
+        });
+        return res.status(200).send({
+            message: "User Registration Successfull!",
+            authToken,
+            data: result
+        });
+    } else {
+        return res.status(400).send("Your OTP was wrong!")
+    }
+}
