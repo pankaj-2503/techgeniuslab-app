@@ -13,4 +13,6 @@ app.use(express.urlencoded({extended: false }));
 app.get('/', function (req, res) {
   res.send('Server running');
 })
-/
+//mongoDB connectiongit
+connectDB();
+
