@@ -14,6 +14,6 @@ const generateAuthToken = (user) => {
             number: user.email,
         },
         process.env.JWT_SECRET_KEY,
-        {expiresIn:'2h'} //Token will
+        {expiresIn:'2h'} //Token will expires in 2 hours
     )
 }
