@@ -17,3 +17,4 @@ const generateAuthToken = (user) => {
         {expiresIn:'2h'} //Token will expires in 2 hours
     )
 }
+
