@@ -16,3 +16,6 @@ app.get('/', function (req, res) {
 //mongoDB connectiongit
 connectDB();
 
+//middlewares
+app.use(express.json());
+
