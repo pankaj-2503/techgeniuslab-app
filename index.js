@@ -19,3 +19,5 @@ connectDB();
 //middlewares
 app.use(express.json());
 
+//router
+app.use('/api/user',userRouter)
