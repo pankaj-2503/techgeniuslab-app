@@ -6,3 +6,4 @@ router.route('/signup')
 router.route('/signup/verify')
     .post(verifyOtp);
 
+module.exports = router;
