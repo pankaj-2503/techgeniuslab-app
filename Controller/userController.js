@@ -16,5 +16,5 @@ const generateAuthToken = (user) => {
         process.env.JWT_SECRET_KEY,
         {expiresIn:'2h'} //Token will expires in 2 hours
     )
-}
+};
 
