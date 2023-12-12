@@ -1,10 +1,10 @@
 const express = require('express')
 require('dotenv').config();
 const connectDB = require("./config/database");
-const userRouter = require('./routers/userRouter');
-const productRouter = require('./routers/productRouter');
-const adminRouter = require('./routers/adminRouter');
-const orderRouter = require('./routers/orderRouter');
+const userRouter = require('./Router/userRouter');
+const productRouter = require('./Router/productRouter');
+const adminRouter = require('./Router/adminRouter');
+const orderRouter = require('./Router/orderRouter');
 const app = express()
 
 app.use(express.urlencoded({extended: false }));
