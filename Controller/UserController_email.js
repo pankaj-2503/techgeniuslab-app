@@ -6,13 +6,13 @@ const { User } = require('../Model/userModel');
 const { Otp } = require('../Model/otpModel');
 
 const transporter = nodemailer.createTransport({
-    host: process.env.host,
-    port: process.env.port ,
+    host: process.env.HOST,
+    port: process.env.PORT ,
     secure: false,
 
     auth:{
-        user: process.env.user,
-        pass: process.env.pass 
+        user: process.env.USER,
+        pass: process.env.PASS 
 
     }
 });
