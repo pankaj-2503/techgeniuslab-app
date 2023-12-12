@@ -6,13 +6,13 @@ const { User } = require('../Model/userModel');
 const { Otp } = require('../Model/otpModel');
 
 const transporter = nodemailer.createTransport({
-    host: 'smtp-relay.brevo.com',
-    port:   587 ,
+    host: process.env.host,
+    port: process.env.port ,
     secure: false,
 
     auth:{
-        user: 'salvinrai2411@gmail.com',
-        pass: 'CBK7XOm0kP2AQF56' 
+        user: process.env.user,
+        pass: process.env.pass 
 
     }
 });
