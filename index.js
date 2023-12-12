@@ -3,8 +3,8 @@ require('dotenv').config();
 const connectDB = require("./config/database");
 const userRouter = require('./Router/userRouter');
 const productRouter = require('./Router/courseRouter');
-const adminRouter = require('./routers/adminRouter');
-const orderRouter = require('./routers/orderRouter');
+// const adminRouter = require('./routers/adminRouter');
+
 const app = express()
 
 const sendmail = require('./Controller/UserController_email');

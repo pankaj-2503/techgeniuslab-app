@@ -67,6 +67,45 @@ const generateAuthToken = (user) => {
     const result = await otp.save();
     return res.status(200).send("Otp send successfully!");
    }
+
+   // sign-in \ for the user
+  module.exports.signin = async (req, res) => {
+    const user = await User.findOne({
+        email: req.body.email
+    });
+    if (user) { return res.status(200).send("registered send the otp verififaction module");
+   // otp already taken -- line 19
+   // resending the mail for sign up
+   // sending mail from nodemailer-- to to user..
+   var mailOptions = {
+    from: 'techgeniouslab@gmail.com',
+    to:'salvinrai24@gmail.com',
+    subject: 'otp -- does not share this code',
+    text:`hello your otp is ${OTP} this otp is valid  only for 10 minutes` 
+
+    };
+
+    transporter.sendMail(mailOptions,function(error,info){
+      if(error){
+          console.log(error);
+      }else{
+        console.log("Email sent succesfully");
+      }
+    });
+
+    const email = req.body.email;
+  
+    console.log(OTP);
+    const otp = new Otp({ email: email, otp: OTP });
+    const salt = await bcrypt.genSalt(10)
+    otp.otp = await bcrypt.hash(otp.otp, salt);
+    const result = await otp.save();
+    return res.status(200).send("Otp send successfully!");
+    }
+    else{
+      return res.status(400).send("  ")
+    }
+   }
    
    // verify otp for registration and validate 
    module.exports.verifyOtp = async (req, res) => {

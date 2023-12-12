@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const jwt = require('')
+const jwt = require('jsonwebtoken');
 
 const userTypeValues = ['student', 'teacher', 'parent'];
 
@@ -37,18 +37,40 @@ const userSchema = new mongoose.Schema({
   parentEmail: {
     type: String,
     required: true
-  }
+  },
+  tokens: [{
+    token :{
+       type:String,
+       required:true
+    }
+ }]
 });
 
 
-userSchema.methods.generateJWT = function () {
-    const token = jwt.sign({
-        _id: this._id,
-        number: this.number
-    }, process.env.JWT_SECRET_KEY, { expiresIn: "7d" });
-    return token
-}
+// userSchema.methods.generateJWT = function () {
+//     const token = jwt.sign({
+//         _id: this._id,
+//         number: this.number
+//     }, process.env.JWT_SECRET_KEY, { expiresIn: "7d" });
+//     return token
+// }
 
+//---------------token generation for work modulle for authentication-------
+SchoolSchema.methods.generateAuthToken = async function(){
+
+  try{
+     const token = jwt.sign({_id:this.email}, process.env.JWT_SECRET_KEY,{expiresIn:"7d"});
+      this.tokens = this.tokens.concat({token:token})
+     await this.save();
+
+     return token;
+  }
+  catch (error){
+     res.status(400).send('the error part in token generation in user model ' + error);
+     console.log('the error part in token generation in user model' + error);
+
+  }
+}
 
 const User = mongoose.model('User', userSchema);
 
