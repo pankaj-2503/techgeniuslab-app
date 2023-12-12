@@ -56,10 +56,10 @@ const userSchema = new mongoose.Schema({
 // }
 
 //---------------token generation for work modulle for authentication-------
-SchoolSchema.methods.generateAuthToken = async function(){
-
+userSchema.methods.generateAuthToken = async function(){
+  const sevenDaysInMilliseconds = 7 * 24 * 60 * 60 * 1000;
   try{
-     const token = jwt.sign({_id:this.email}, process.env.JWT_SECRET_KEY,{expiresIn:"7d"});
+     const token = jwt.sign({_id:this.email}, process.env.JWT_SECRET_KEY,{expiresIn: sevenDaysInMilliseconds});
       this.tokens = this.tokens.concat({token:token})
      await this.save();
 
