@@ -1,9 +1,11 @@
 const nodemailer = require('nodemailer');
+// const _ = require("lodash");
+// const axios = require("axios");
 const generateOTP = require('../Middleware/otp-generator');
 const bcrypt = require("bcrypt");
 
 const User = require('../Model/userModel');
-const Otp = require('../Model/otpModel');
+const OTP_Model= require('../Model/otpModel');
 
 const transporter = nodemailer.createTransport({
     host: process.env.HOST,
@@ -63,11 +65,11 @@ const generateAuthToken = (user) => {
     const email = req.body.email;
   
     console.log(OTP);
-    const otp = new Otp({ email: email, otp: OTP });
+    const otpInstance = new OTP_Model({ email: email, otp: OTP });
     
     const salt = await bcrypt.genSalt(10)
-    otp.otp = await bcrypt.hash(otp.otp, salt);
-    const result = await otp.save();
+    otpInstance.otp = await bcrypt.hash(otpInstance.otp, salt);
+    const result = await otpInstance.save();
     return res.status(200).send("Otp send successfully!");
    }
 
