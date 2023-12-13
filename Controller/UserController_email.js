@@ -2,8 +2,8 @@ const nodemailer = require('nodemailer');
 const generateOTP = require('../Middleware/otp-generator');
 const bcrypt = require("bcrypt");
 
-const { User } = require('../Model/userModel');
-const { Otp } = require('../Model/otpModel');
+const User = require('../Model/userModel');
+const Otp = require('../Model/otpModel');
 
 const transporter = nodemailer.createTransport({
     host: process.env.HOST,
@@ -35,8 +35,10 @@ const generateAuthToken = (user) => {
 
   // sign-up \ for the user
   module.exports.signUp = async (req, res) => {
+    const emails = req.body.email;
+    
     const user = await User.findOne({
-        email: req.body.email
+        email: emails
     });
     if (user) return res.status(400).send("User already registered!");
    // otp already taken -- line 19
@@ -62,6 +64,7 @@ const generateAuthToken = (user) => {
   
     console.log(OTP);
     const otp = new Otp({ email: email, otp: OTP });
+    
     const salt = await bcrypt.genSalt(10)
     otp.otp = await bcrypt.hash(otp.otp, salt);
     const result = await otp.save();
