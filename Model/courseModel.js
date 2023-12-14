@@ -16,6 +16,10 @@ const CourseSchema = new Schema({
   imageUrl: {
     type: String,
   },
+  published: {
+    type: String,
+    enum: ['Published', 'Not Published'],
+  }
 });
 
 module.exports = mongoose.model('Course', CourseSchema);

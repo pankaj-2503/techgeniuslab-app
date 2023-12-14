@@ -25,7 +25,7 @@ app.get('/', function (req, res) {
 app.use(express.json());
 
 //router
-// app.use('/api/user',userRouter)
+app.use('/api/user',userRouter)
 // app.use('/api/product',productRouter)
 // app.use('/api/admin',adminRouter)
 // app.use('/api/order',orderRouter);

@@ -56,7 +56,7 @@ const userSchema = new mongoose.Schema({
 // }
 
 //---------------token generation for work modulle for authentication-------
-SchoolSchema.methods.generateAuthToken = async function(){
+userSchema.methods.generateAuthToken = async function(){
 
   try{
      const token = jwt.sign({_id:this.email}, process.env.JWT_SECRET_KEY,{expiresIn:"7d"});
