@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer');
-// const _ = require("lodash");
+const _ = require("lodash");
 // const axios = require("axios");
 const generateOTP = require('../Middleware/otp-generator');
 const bcrypt = require("bcrypt");
@@ -115,7 +115,7 @@ const generateAuthToken = (user) => {
    
    // verify otp for registration and validate 
    module.exports.verifyOtp = async (req, res) => {
-    const otpHolder = await Otp.find({
+    const otpHolder = await OTP_Model.find({
         email: req.body.email
     });
     if (otpHolder.length === 0) return res.status(400).send("You use an Expired OTP!");
@@ -140,7 +140,7 @@ const generateAuthToken = (user) => {
         // to dev- debug -- delete it during production
         console.log(authToken);
         const result = await user.save();
-        const OTPDelete = await Otp.deleteMany({
+        const OTPDelete = await OTP_Model.deleteMany({
             email: rightOtpFind.email
         });
         return res.status(200).send({
