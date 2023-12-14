@@ -19,7 +19,7 @@ app.get('/', function (req, res) {
 
 
 //mongoDB connectiongit
-// connectDB();
+connectDB();
 
 //middlewares
 app.use(express.json());
@@ -31,4 +31,4 @@ app.use('/api/user',userRouter)
 // app.use('/api/order',orderRouter);
 
 
-app.listen(process.env.PORT || 5000)
+app.listen(process.env.SERVERPORT || 5000)

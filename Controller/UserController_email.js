@@ -1,18 +1,20 @@
 const nodemailer = require('nodemailer');
+const _ = require("lodash");
+// const axios = require("axios");
 const generateOTP = require('../Middleware/otp-generator');
 const bcrypt = require("bcrypt");
 
-const { User } = require('../Model/userModel');
-const { Otp } = require('../Model/otpModel');
+const User = require('../Model/userModel');
+const OTP_Model= require('../Model/otpModel');
 
 const transporter = nodemailer.createTransport({
-    host: process.env.host,
-    port: process.env.port ,
+    host: process.env.HOST,
+    port: process.env.PORT ,
     secure: false,
 
     auth:{
-        user: process.env.user,
-        pass: process.env.pass 
+        user: process.env.USER,
+        pass: process.env.PASS 
 
     }
 });
@@ -35,8 +37,10 @@ const generateAuthToken = (user) => {
 
   // sign-up \ for the user
   module.exports.signUp = async (req, res) => {
+    const emails = req.body.email;
+    
     const user = await User.findOne({
-        email: req.body.email
+        email: emails
     });
     if (user) return res.status(400).send("User already registered!");
    // otp already taken -- line 19
@@ -61,55 +65,57 @@ const generateAuthToken = (user) => {
     const email = req.body.email;
   
     console.log(OTP);
-    const otp = new Otp({ email: email, otp: OTP });
+    const otpInstance = new OTP_Model({ email: email, otp: OTP });
+    
     const salt = await bcrypt.genSalt(10)
-    otp.otp = await bcrypt.hash(otp.otp, salt);
-    const result = await otp.save();
+    otpInstance.otp = await bcrypt.hash(otpInstance.otp, salt);
+    const result = await otpInstance.save();
     return res.status(200).send("Otp send successfully!");
    }
 
-   // sign-in \ for the user
-  module.exports.signin = async (req, res) => {
-    const user = await User.findOne({
-        email: req.body.email
-    });
-    if (user) { return res.status(200).send("registered send the otp verififaction module");
-   // otp already taken -- line 19
-   // resending the mail for sign up
-   // sending mail from nodemailer-- to to user..
-   var mailOptions = {
-    from: 'techgeniouslab@gmail.com',
-    to:'salvinrai24@gmail.com',
-    subject: 'otp -- does not share this code',
-    text:`hello your otp is ${OTP} this otp is valid  only for 10 minutes` 
+  //  // sign-in \ for the user
+  // module.exports.signin = async (req, res) => {
+  //   const user = await User.findOne({
+  //       email: req.body.email
+  //   });
+  //   if (user) { return res.status(200).send("registered send the otp verififaction module")
+  //  // otp already taken -- line 19
+  //  // resending the mail for sign up
+  //  // sending mail from nodemailer-- to to user..
 
-    };
+  //  var mailOptions = {
+  //   from: 'techgeniouslab@gmail.com',
+  //   to:'salvinrai24@gmail.com',
+  //   subject: 'otp -- does not share this code',
+  //   text:`hello your otp is ${OTP} this otp is valid  only for 10 minutes` 
 
-    transporter.sendMail(mailOptions,function(error,info){
-      if(error){
-          console.log(error);
-      }else{
-        console.log("Email sent succesfully");
-      }
-    });
+  //   };
 
-    const email = req.body.email;
+  //   transporter.sendMail(mailOptions,function(error,info){
+  //     if(error){
+  //         console.log(error);
+  //     }else{
+  //       console.log("Email sent succesfully");
+  //     }
+  //   });
+
+  //   const email = req.body.email;
   
-    console.log(OTP);
-    const otp = new Otp({ email: email, otp: OTP });
-    const salt = await bcrypt.genSalt(10)
-    otp.otp = await bcrypt.hash(otp.otp, salt);
-    const result = await otp.save();
-    return res.status(200).send("Otp send successfully!");
-    }
-    else{
-      return res.status(400).send("  ")
-    }
-   }
+  //   console.log(OTP);
+  //   const otp = new Otp({ email: email, otp: OTP });
+  //   const salt = await bcrypt.genSalt(10)
+  //   otp.otp = await bcrypt.hash(otp.otp, salt);
+  //   const result = await otp.save();
+  //   return res.status(200).send("Otp send successfully!");
+  //   }
+  //   else{
+  //     return res.status(400).send("  ")
+  //   }
+  //  }
    
    // verify otp for registration and validate 
    module.exports.verifyOtp = async (req, res) => {
-    const otpHolder = await Otp.find({
+    const otpHolder = await OTP_Model.find({
         email: req.body.email
     });
     if (otpHolder.length === 0) return res.status(400).send("You use an Expired OTP!");
@@ -122,11 +128,19 @@ const generateAuthToken = (user) => {
 
         // Generate and send the JWT token in the response
         const authToken = generateAuthToken(user);
+        console.log('the token part'+ authToken);
+        const sevenDaysInMilliseconds = 7 * 24 * 60 * 60 * 1000;
+      res.cookie('jwtd',authToken,{
+        maxAge: sevenDaysInMilliseconds,
+        httpOnly:true,
+        //secure:true
+      });
+      res.send("cookie send completed");
         
         // to dev- debug -- delete it during production
         console.log(authToken);
         const result = await user.save();
-        const OTPDelete = await Otp.deleteMany({
+        const OTPDelete = await OTP_Model.deleteMany({
             email: rightOtpFind.email
         });
         return res.status(200).send({

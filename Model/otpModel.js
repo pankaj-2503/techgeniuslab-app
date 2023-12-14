@@ -1,8 +1,8 @@
-const { Schema, model } = require("mongoose");
+const mongoose = require('mongoose');
 
+const Otp = new mongoose.Schema({
 
-module.exports.Otp = model('Otp', Schema({
-    number: {
+    email: {
         type: String,
         required: true
     },
@@ -13,4 +13,8 @@ module.exports.Otp = model('Otp', Schema({
     createdAt: { type: Date, default: Date.now, index: { expires: 300 } }
 
     // After 5 minutes it deleted automatically from the database
-}, { timestamps: true }))
+}, { timestamps: true })
+
+const OTP_Model = mongoose.model('OTP', Otp);
+
+module.exports = OTP_Model;
