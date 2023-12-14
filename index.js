@@ -2,7 +2,7 @@ const express = require('express')
 require('dotenv').config();
 const connectDB = require("./config/database");
 const userRouter = require('./Router/userRouter');
-const productRouter = require('./Router/courseRouter');
+const courseRouter = require('./Router/courseRouter');
 // const adminRouter = require('./routers/adminRouter');
 const colors = require("colors");
 const app = express()
@@ -26,7 +26,7 @@ app.use(express.json());
 
 //router
 app.use('/api/user',userRouter)
-// app.use('/api/product',productRouter)
+app.use('/api/course',courseRouter)
 // app.use('/api/admin',adminRouter)
 // app.use('/api/order',orderRouter);
 
