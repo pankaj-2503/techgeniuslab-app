@@ -4,7 +4,7 @@ const connectDB = require("./config/database");
 const userRouter = require('./Router/userRouter');
 const productRouter = require('./Router/courseRouter');
 // const adminRouter = require('./routers/adminRouter');
-
+const colors = require("colors");
 const app = express()
 
 const sendmail = require('./Controller/UserController_email');
@@ -32,3 +32,4 @@ app.use('/api/user',userRouter)
 
 
 app.listen(process.env.SERVERPORT || 5000)
+console.log(`server running at port ${process.env.SERVERPORT }`.bgRed.white)
