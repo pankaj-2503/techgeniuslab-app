@@ -47,14 +47,6 @@ const userSchema = new mongoose.Schema({
 });
 
 
-// userSchema.methods.generateJWT = function () {
-//     const token = jwt.sign({
-//         _id: this._id,
-//         number: this.number
-//     }, process.env.JWT_SECRET_KEY, { expiresIn: "7d" });
-//     return token
-// }
-
 //---------------token generation for work modulle for authentication-------
 userSchema.methods.generateAuthToken = async function(){
   const sevenDaysInMilliseconds = 7 * 24 * 60 * 60 * 1000;
