@@ -211,8 +211,14 @@ module.exports.isUserVerified = async(req, res) => {
       res.status(401).json({ isVerified: false ,error: 'User is not verified' });
     }
   } catch (error) {
-    console.error('Error in verifying user by token:', error);
-    res.status(500).json({ error: 'Internal server error' });
+
+    if (error.name === 'TokenExpiredError') {
+      console.error('Token Expired');
+      res.status(401).json({ isTokenExpired: true ,error: 'Token Expired' });
+    }
+    else {
+      console.error('Error in verifying user by token:', error);
+      res.status(500).json({ error: 'Internal server error' });}
   }
 }
 
