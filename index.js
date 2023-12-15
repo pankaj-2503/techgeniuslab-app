@@ -7,7 +7,7 @@ const courseRouter = require('./Router/courseRouter');
 const colors = require("colors");
 const app = express()
 
-const sendmail = require('./Controller/UserController_email');
+
 const { send } = require('process');
 
 app.use(express.urlencoded({extended: false }));
