@@ -23,7 +23,7 @@ const transporter = nodemailer.createTransport({
 const OTP = generateOTP;
 
 
-const generateAuthToken = (user) => {
+ const generateAuthToken = (user) => {
     const token = jwt.sign(
       {
         _id: user._id,
@@ -31,7 +31,7 @@ const generateAuthToken = (user) => {
         // Add any other user information you want to include in the token
       },
       process.env.JWT_SECRET_KEY,
-      { expiresIn: '2h' } // Token will expire in 2 hours
+      { expiresIn: '1m' } // Token will expire in 2 hours
     );
   
     return token;
@@ -96,7 +96,7 @@ const generateAuthToken = (user) => {
         // Generate and send the JWT token in the response
         const authToken = generateAuthToken(user);
         console.log('the token part : '+ authToken);
-        const sevenDaysInMilliseconds = 7 * 24 * 60 * 60 * 1000;
+        const sevenDaysInMilliseconds =  7 * 24 * 60 * 60 * 1000;
       res.cookie('jwtd',authToken,{
         maxAge: sevenDaysInMilliseconds,
         httpOnly:true,
@@ -151,7 +151,7 @@ const generateAuthToken = (user) => {
           const user = new User(_.pick(req.body, ["email"]));
           const authToken = generateAuthToken(user);
           console.log('the token part : '+ authToken);
-          const sevenDaysInMilliseconds = 7 * 24 * 60 * 60 * 1000;
+          const sevenDaysInMilliseconds = 1000;
           res.cookie('jwtd',authToken,{
           maxAge: sevenDaysInMilliseconds,
           httpOnly:true,
@@ -183,7 +183,7 @@ const generateAuthToken = (user) => {
 
 
 
-module.exports.isUserVerified = async(req, res) => {
+module.exports.verifyUserByToken = async(req, res) => {
 
   try {
     const userToken = req.body.token;
