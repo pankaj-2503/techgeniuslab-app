@@ -131,10 +131,12 @@ const generateAuthToken = (user) => {
     const validUser = await bcrypt.compare(req.body.otp, rightOtpFind.otp);
 
     if (rightOtpFind.email === req.body.email && validUser) {
-        const user = new User(_.pick(req.body, ["email"]));
+        
         
         
         // Generate and send the JWT token in the response
+
+        const user = new User(_.pick(req.body, ["email"]));
         const authToken = generateAuthToken(user);
         console.log('the token part : '+ authToken);
         const sevenDaysInMilliseconds = 7 * 24 * 60 * 60 * 1000;
