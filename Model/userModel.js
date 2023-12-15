@@ -43,6 +43,11 @@ const userSchema = new mongoose.Schema({
     default: false,
     required: true
   },
+  is_account_created: {
+    type: Boolean,
+    default: false,
+    required: true
+  },
   tokens: [{
     token :{
        type:String,
