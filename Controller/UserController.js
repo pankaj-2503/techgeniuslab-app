@@ -209,11 +209,19 @@ module.exports.verifyUserByToken = async(req, res) => {
      // Check if the user is created or not
      const isAccountCreated = user.is_account_created;
 
-    if (isVerified) {
-      res.status().json({  isVerified: true ,message: 'User is verified' });
+     if (isAccountCreated) {
+
+      if (isVerified) {
+        res.status().json({   isAccountCreated: true ,isVerified: true ,message: 'User is verified' });
+      } else {
+        res.status(401).json({  isAccountCreated: true ,isVerified: false ,error: 'User Account completed but not verified' });
+      }
+
     } else {
-      res.status(401).json({ isVerified: false ,error: 'User is not verified' });
+      res.status(401).json({ isVerified: false ,error: 'User Account is not complet4ed' });
     }
+    
+    
   } catch (error) {
 
     if (error.name === 'TokenExpiredError') {
