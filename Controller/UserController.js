@@ -39,13 +39,19 @@ const generateAuthToken = (user) => {
   module.exports.signUp = async (req, res) => {
     const emails = req.body.email;
     
-    const user = await User.findOne({
-        email: emails
-    });
-    if (user) return res.status(400).send("User already registered!");
-   // otp already taken -- line 19
+    
+    // user can get otp single time: one email can login one time: which is not correct for this sytem
+    // const user = await User.findOne({
+    //     email: emails
+    // });
+    // if (user) return res.status(400).send("User already registered!");
+   
+   
+    // otp already taken -- line 19
    
    // sending mail from nodemailer-- to to user..
+   
+   
    var mailOptions = {
     from: 'techgeniouslab@gmail.com',
     to: emails,
