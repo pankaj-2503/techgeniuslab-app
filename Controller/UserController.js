@@ -123,16 +123,20 @@ const generateAuthToken = (user) => {
     const otpHolder = await OTP_Model.find({
         email: req.body.email
     });
-
-
+    
     if (otpHolder.length === 0) return res.status(400).send("You use an Expired OTP!");
     
     const rightOtpFind = otpHolder[otpHolder.length - 1];
     const validUser = await bcrypt.compare(req.body.otp, rightOtpFind.otp);
 
-    if (rightOtpFind.email === req.body.email && validUser) {
+    if (rightOtpFind.email === req.body.email && validUser) { //condition when OTP is verified successfully
         
-        
+      // To   
+      const isuser = await User.findOne({
+            email: emails
+        });
+        if (isuser) return res.status(400).send("User already registered!");
+       
         
         // Generate and send the JWT token in the response
 
