@@ -35,7 +35,7 @@ const generateAuthToken = (user) => {
     return token;
   };
 
-  // sign-up for the user
+  // Login for the user
   module.exports.signUp = async (req, res) => {
     const emails = req.body.email;
     
