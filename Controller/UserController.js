@@ -133,7 +133,7 @@ const generateAuthToken = (user) => {
         
       // To  check is the User already registered or new user
       const isuser = await User.findOne({
-            email: emails
+            email: req.body.email
         });
         if (isuser) return res.status(400).send("User already registered!");
        
