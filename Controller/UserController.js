@@ -114,6 +114,8 @@ const generateAuthToken = (user) => {
     }
 }
 
+
+
    // verify otp for registration and validate 
    module.exports.verifyAccount = async (req, res) => {
     
@@ -136,12 +138,13 @@ const generateAuthToken = (user) => {
         const authToken = generateAuthToken(user);
         console.log('the token part : '+ authToken);
         const sevenDaysInMilliseconds = 7 * 24 * 60 * 60 * 1000;
-      res.cookie('jwtd',authToken,{
+        res.cookie('jwtd',authToken,{
         maxAge: sevenDaysInMilliseconds,
         httpOnly:true,
         //secure:true
-      });
-      res.send("cookie send completed");
+        });
+        
+        res.send("cookie send completed");
         
         // to dev- debug -- delete it during production
         console.log(authToken);
