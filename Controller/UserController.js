@@ -114,6 +114,46 @@ const generateAuthToken = (user) => {
     }
 }
 
+   // verify otp for registration and validate 
+   module.exports.verifyAccount = async (req, res) => {
+    
+    // checking th email from request is available in the OTP database is present or not
+    const otpHolder = await OTP_Model.find({
+        email: req.body.email
+    });
+
+
+    if (otpHolder.length === 0) return res.status(400).send("You use an Expired OTP!");
+    
+    const rightOtpFind = otpHolder[otpHolder.length - 1];
+    const validUser = await bcrypt.compare(req.body.otp, rightOtpFind.otp);
+
+    if (rightOtpFind.email === req.body.email && validUser) {
+        const user = new User(_.pick(req.body, ["email"]));
+        
+        
+        // Generate and send the JWT token in the response
+        const authToken = generateAuthToken(user);
+        console.log('the token part : '+ authToken);
+        const sevenDaysInMilliseconds = 7 * 24 * 60 * 60 * 1000;
+      res.cookie('jwtd',authToken,{
+        maxAge: sevenDaysInMilliseconds,
+        httpOnly:true,
+        //secure:true
+      });
+      res.send("cookie send completed");
+        
+        // to dev- debug -- delete it during production
+        console.log(authToken);
+        const result = await user.save();
+        const OTPDelete = await OTP_Model.deleteMany({
+            email: rightOtpFind.email
+        });
+        } 
+        else {
+        return res.status(400).send("Your OTP was wrong!")
+    }
+}
 
 
 
