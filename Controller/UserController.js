@@ -205,6 +205,10 @@ module.exports.verifyUserByToken = async(req, res) => {
     // Check if the user is verified
     const isVerified = user.is_verified;
 
+
+     // Check if the user is created or not
+     const isAccountCreated = user.is_account_created;
+
     if (isVerified) {
       res.status().json({  isVerified: true ,message: 'User is verified' });
     } else {
