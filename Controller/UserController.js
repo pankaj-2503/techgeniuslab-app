@@ -131,7 +131,7 @@ const generateAuthToken = (user) => {
 
     if (rightOtpFind.email === req.body.email && validUser) { //condition when OTP is verified successfully
         
-      // To   
+      // To  check is the User already registered or new user
       const isuser = await User.findOne({
             email: emails
         });
