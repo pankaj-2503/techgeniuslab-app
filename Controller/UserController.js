@@ -102,13 +102,8 @@ const generateAuthToken = (user) => {
         const OTPDelete = await OTP_Model.deleteMany({
             email: rightOtpFind.email
         });
-        // return res.status(200).send({
-        //     message: "User Registration Successfull!",
-        //     authToken,
-        //     data: result
-        // });
-        // return res.status(200).send("User Registration Successfull!");
-    } else {
+        } 
+        else {
         return res.status(400).send("Your OTP was wrong!")
     }
 }
