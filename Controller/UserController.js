@@ -6,6 +6,8 @@ const bcrypt = require("bcrypt");
 
 const User = require('../Model/userModel');
 const OTP_Model= require('../Model/otpModel');
+const jwt = require('jsonwebtoken');
+
 
 const transporter = nodemailer.createTransport({
     host: process.env.HOST,
@@ -20,7 +22,7 @@ const transporter = nodemailer.createTransport({
 });
 const OTP = generateOTP;
 
-const jwt = require('jsonwebtoken');
+
 const generateAuthToken = (user) => {
     const token = jwt.sign(
       {
@@ -133,22 +135,28 @@ const generateAuthToken = (user) => {
         
       // To  check is the User already registered or new user
       const isuser = await User.findOne({
-            email: req.body.email
+          email: req.body.email
         });
-        if (isuser) return res.status(400).send("User already registered!");
-       
-        
-        // Generate and send the JWT token in the response
 
-        const user = new User(_.pick(req.body, ["email"]));
-        const authToken = generateAuthToken(user);
-        console.log('the token part : '+ authToken);
-        const sevenDaysInMilliseconds = 7 * 24 * 60 * 60 * 1000;
-        res.cookie('jwtd',authToken,{
-        maxAge: sevenDaysInMilliseconds,
-        httpOnly:true,
-        //secure:true
-        });
+      if (isuser){ //condition: if user found in the REGISTERED_USER_COLLECTION
+          //console.log("User is registered");
+          
+          const user_verified_status = isuser.is_verified;
+          console.log(user_verified_status);
+
+          if(user_verified_status) {
+
+            // Generate and send the JWT token in the response
+
+          const user = new User(_.pick(req.body, ["email"]));
+          const authToken = generateAuthToken(user);
+          console.log('the token part : '+ authToken);
+          const sevenDaysInMilliseconds = 7 * 24 * 60 * 60 * 1000;
+          res.cookie('jwtd',authToken,{
+          maxAge: sevenDaysInMilliseconds,
+          httpOnly:true,
+          //secure:true
+          });
         
         res.send("cookie send completed");
         
@@ -158,15 +166,55 @@ const generateAuthToken = (user) => {
         const OTPDelete = await OTP_Model.deleteMany({
             email: rightOtpFind.email
         });
+            return res.send("user is registered and verified");
+          }
+          else{ 
+            return res.send("new user");
+          }
+          
+          //return res.status(400).send("User already registered!");
+        
+        } 
         } 
         else {
         return res.status(400).send("Your OTP was wrong!")
-    }
+     }
 }
 
 
 
+module.exports.isUserVerified = async(req, res) => {
 
+  try {
+    const userToken = req.body.token;
+    //console.log(userToken);
+
+    // Verify the JWT token
+    const decoded = jwt.verify(userToken, process.env.JWT_SECRET_KEY);
+    console.log("decoded token",decoded);
+
+
+    // Find the user by email from the decoded token
+    const user = await User.findOne({ email: decoded.email});
+    console.log("user",user);
+    if (!user) {
+      // If user not found
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Check if the user is verified
+    const isVerified = user.is_verified;
+
+    if (isVerified) {
+      res.status().json({  isVerified: true ,message: 'User is verified' });
+    } else {
+      res.status(401).json({ isVerified: false ,error: 'User is not verified' });
+    }
+  } catch (error) {
+    console.error('Error in verifying user by token:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
 
 
 
