@@ -2,7 +2,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const CourseSchema = new Schema({
-  title: {
+  courseId: {
+    type: Number,
+    required: true
+  },
+  courseTitle: {
     type: String,
     required: true,
   },
@@ -13,9 +17,13 @@ const CourseSchema = new Schema({
     type: String,
     enum: ['Beginner', 'Intermediate', 'Advanced'],
   },
-  imageUrl: {
+  thumbnail: {
     type: String,
   },
+  introVideoUrl:{
+    type: String,
+  },
+  lectures: [lectureSchema],
   published: {
     type: String,
     enum: ['Published', 'Not Published'],
