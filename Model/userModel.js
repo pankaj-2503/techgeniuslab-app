@@ -11,32 +11,32 @@ const userSchema = new mongoose.Schema({
   },
   userType: {
     type: String,
-    required: true,
+    
     enum: userTypeValues
   },
   firstName: {
-    type: String,
-    required: true
+    type: String
+    
   },
   lastName: {
-    type: String,
-    required: true
+    type: String
+    
   },
   dateOfBirth: {
-    type: Date,
-    required: true
+    type: Date
+    
   },
   grade: {
-    type: Number,
-    required: true
+    type: Number
+    
   },
   schoolName: {
-    type: String,
-    required: true
+    type: String
+    
   },
   parentEmail: {
-    type: String,
-    required: true
+    type: String
+    
   },
   tokens: [{
     token :{
