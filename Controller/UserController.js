@@ -31,7 +31,7 @@ const OTP = generateOTP;
         // Add any other user information you want to include in the token
       },
       process.env.JWT_SECRET_KEY,
-      { expiresIn: '1m' } // Token will expire in 2 hours
+      { expiresIn: '7d' } // Token will expire in 7 days
     );
   
     return token;
@@ -221,6 +221,51 @@ module.exports.verifyUserByToken = async(req, res) => {
       res.status(500).json({ error: 'Internal server error' });}
   }
 }
+
+module.exports.completeUserAccount = async (req, res) => {
+  try {
+    const userToken = req.headers.authorization.split(' ')[1]; // Extract token from the Authorization header
+    const decoded = jwt.verify(userToken, process.env.JWT_SECRET_KEY);
+
+    // Find the user by email from the decoded token
+    const user = await User.findOne({ email: decoded.email, is_verified: false });
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found or already verified.' });
+    }
+
+    // Extract fields from the request body
+    const { userType, firstName, lastName, dateOfBirth, grade, schoolName, parentEmail } = req.body;
+
+    // Update only the specified fields
+    const updatedUser = await User.findOneAndUpdate(
+      { email: decoded.email, is_account_created: false },
+      {
+        $set: {
+          userType,
+          firstName,
+          lastName,
+          dateOfBirth,
+          grade,
+          schoolName,
+          parentEmail,
+          is_verified: false,
+          is_account_created: true,
+        },
+      },
+      { new: true }
+    );
+
+    res.json({ user: updatedUser, success: true, message: 'User verified and details updated successfully' });
+  } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({ success: false, message: 'Token expired' });
+    }
+
+    console.error('Error verifying and updating user details:', error);
+    res.status(500).json({ success: false, message: 'An error occurred while verifying and updating user details.', error });
+  }
+};
 
 
 
